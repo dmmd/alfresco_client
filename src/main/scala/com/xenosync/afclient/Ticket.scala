@@ -1,25 +1,13 @@
 package com.xenosync.afclient
 
-class Ticket(val credentials : Credentials){
-	import org.apache.http.HttpEntity
-	import org.apache.http.HttpHost;
-	import org.apache.http.HttpResponse
-	import org.apache.http.auth.AuthScope;
-	import org.apache.http.auth.UsernamePasswordCredentials;
-	import org.apache.http.client.AuthCache;
-	import org.apache.http.client.methods.HttpGet
-	import org.apache.http.client.protocol.ClientContext;
-	import org.apache.http.impl.auth.BasicScheme;
-	import org.apache.http.impl.client.BasicAuthCache;
-	import org.apache.http.impl.client.DefaultHttpClient
-	import org.apache.http.protocol.BasicHttpContext;
-	import org.apache.http.util.EntityUtils;
-	import scala.io.Source
+class Ticket(){
+
 	import java.io.File
 	import org.apache.commons.io.FileUtils
+	import com.xenosync.afclient.Credentials
+	import com.xenosync.afclient.Request
 	
-	val client = new DefaultHttpClient();
-	val creds : Credentials = credentials
+	val creds : Credentials = new Credentials()
 	var ticket : String = readTicketFile()
 	
 	def readTicketFile() : String = {
@@ -29,7 +17,7 @@ class Ticket(val credentials : Credentials){
 	
 	def validateTicket(currentTicket : String): String = {
 		val request = creds.api + "login/ticket/" + currentTicket
-		if(("TICKET_.{40}".r findAllIn httpRequest(request)).mkString == currentTicket)
+		if(("TICKET_.{40}".r findAllIn new Request(request).getResponse()).mkString == currentTicket)
 			currentTicket
 		else
 			getNewTicket()
@@ -37,7 +25,7 @@ class Ticket(val credentials : Credentials){
 	
 	def getNewTicket() : String = {
 		val request = ("login?u=" + creds.u + "&pw=" + creds.pw)
-		val ticketString : String = ("TICKET_.{40}".r findAllIn httpRequest(request)).mkString
+		val ticketString : String = ("TICKET_.{40}".r findAllIn new Request(request).getResponse()).mkString
 		val f : File = new File("ticket")
 		writeTicketFile(ticketString)
 		ticketString
@@ -47,24 +35,6 @@ class Ticket(val credentials : Credentials){
 		val ticketFile : File = new File(creds.ticket)
 		FileUtils.writeStringToFile(ticketFile, string, "UTF-8", false)
 	}
-
-	def httpRequest(request : String) : String = {
-		val targetHost = new HttpHost(creds.url, creds.port, "http");
-		client.getCredentialsProvider().setCredentials(
-			new AuthScope(targetHost.getHostName(), targetHost.getPort()),
-			new UsernamePasswordCredentials(creds.u, creds.pw)
-		)
-		val authCache = new BasicAuthCache();
-		val basicAuth = new BasicScheme();
-		authCache.put(targetHost, basicAuth);
-		val localcontext = new BasicHttpContext();
-		localcontext.setAttribute(ClientContext.AUTH_CACHE, authCache);  
-		val get = new HttpGet(request);
-		val response = client.execute(targetHost, get, localcontext);
-		val entity = response.getEntity
-		val output = Source.fromInputStream(entity.getContent()).getLines.mkString
-		EntityUtils.consume(entity);
-		get.releaseConnection();
-		output
-	}
+	
+	override def toString() : String = ticket
 }
