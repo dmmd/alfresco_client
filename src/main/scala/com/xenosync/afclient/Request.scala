@@ -1,22 +1,22 @@
 package com.xenosync.afclient
 
+import org.apache.http.HttpEntity
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.AuthCache;
+import org.apache.http.client.methods.HttpGet
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.BasicAuthCache;
+import org.apache.http.impl.client.DefaultHttpClient
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.util.EntityUtils;
+import scala.io.Source
+
 class Request(request : String){
-	import org.apache.http.HttpEntity
-	import org.apache.http.HttpHost;
-	import org.apache.http.HttpResponse
-	import org.apache.http.auth.AuthScope;
-	import org.apache.http.auth.UsernamePasswordCredentials;
-	import org.apache.http.client.AuthCache;
-	import org.apache.http.client.methods.HttpGet
-	import org.apache.http.client.protocol.ClientContext;
-	import org.apache.http.impl.auth.BasicScheme;
-	import org.apache.http.impl.client.BasicAuthCache;
-	import org.apache.http.impl.client.DefaultHttpClient
-	import org.apache.http.protocol.BasicHttpContext;
-	import org.apache.http.util.EntityUtils;
-	import com.xenosync.afclient.Credentials
-	import scala.io.Source
-	
+		
 	val creds : Credentials = new Credentials()
 	val client = new DefaultHttpClient();
 	def getResponse() : String = httpRequest(request)

@@ -1,12 +1,10 @@
 package com.xenosync.afclient
 
-class Ticket(){
+import java.io.File
+import org.apache.commons.io.FileUtils
 
-	import java.io.File
-	import org.apache.commons.io.FileUtils
-	import com.xenosync.afclient.Credentials
-	import com.xenosync.afclient.Request
-	
+class Ticket(){
+			
 	val creds : Credentials = new Credentials()
 	var ticket : String = readTicketFile()
 	
