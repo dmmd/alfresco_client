@@ -1,10 +1,10 @@
 package com.xenosync.afclient
 
 class Credentials{
-	val u = "username"
+	val u = "user"
 	val pw = "password"
-	val url= "url"
-	val port = "8080"
-	val server = url + ":" + port + "/alfresco/service/api/"
+	val url= "server"
+	val port = 8080
+	val api = "/alfresco/service/api/"
 	val ticket = "ticket"
 }
