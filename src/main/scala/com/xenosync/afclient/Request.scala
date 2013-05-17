@@ -1,5 +1,6 @@
 package com.xenosync.afclient
 
+import com.typesafe.config._
 import org.apache.http.HttpEntity
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse
@@ -16,16 +17,15 @@ import org.apache.http.util.EntityUtils;
 import scala.io.Source
 
 class Request(request : String){
-		
-	val creds : Credentials = new Credentials()
+	val creds = ConfigFactory.load();	
 	val client = new DefaultHttpClient();
 	def getResponse() : String = httpRequest(request)
 	
 	def httpRequest(request : String) : String = {
-		val targetHost = new HttpHost(creds.url, creds.port, "http");
+		val targetHost = new HttpHost(creds.getString("afc.url"), creds.getInt("afc.port"), "http");
 		client.getCredentialsProvider().setCredentials(
 			new AuthScope(targetHost.getHostName(), targetHost.getPort()),
-			new UsernamePasswordCredentials(creds.u, creds.pw)
+			new UsernamePasswordCredentials(creds.getString("afc.u"), creds.getString("afc.pw"))
 		)
 		val authCache = new BasicAuthCache();
 		val basicAuth = new BasicScheme();

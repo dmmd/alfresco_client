@@ -3,6 +3,7 @@ name := "Alfresco Client"
 version := "0.1"
 
 libraryDependencies ++= Seq(
+	"com.typesafe" % "config" % "1.0.0",
 	"commons-codec" % "commons-codec" % "1.6",
 	"commons-io" % "commons-io" % "2.4",
 	"commons-logging" % "commons-logging" % "1.1.1",
